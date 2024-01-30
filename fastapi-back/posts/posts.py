@@ -12,8 +12,8 @@ from . import models
 from . import schema
 import threading
 
-producer = RabbitMQProducer("py_queue")
-consumer = RabbitMQConsumer("py_queue")
+producer = RabbitMQProducer("fast_queue")
+consumer = RabbitMQConsumer("fast_queue")
          
 
 consumer_thread = threading.Thread(target=consumer.start_consuming)
@@ -43,7 +43,7 @@ def test_posts_sent(post_post:schema.CreatePost, db:Session = Depends(get_db), t
     db.refresh(new_post)
    
     message_to_publish = post_post.dict()
-    producer.publish_message(routing_key='py_queue', message=message_to_publish)
+    producer.publish_message(routing_key='fast_queue', message=message_to_publish)
     
     return [new_post]
 

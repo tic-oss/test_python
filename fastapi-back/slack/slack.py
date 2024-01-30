@@ -11,8 +11,8 @@ from . import models
 import threading
 
 
-producer = RabbitMQProducer("py_queue")
-consumer = RabbitMQConsumer("py_queue")
+producer = RabbitMQProducer("fast_queue")
+consumer = RabbitMQConsumer("fast_queue")
 
 Mongo_uri = "mongodb://localhost:27017"
 
@@ -62,7 +62,7 @@ def post_message(message: Message, token: str = Depends(oauth2_scheme)):
         ack = result.acknowledged
 
         message_to_publish = message.dict()
-        producer.publish_message(routing_key='py_queue', message=message_to_publish)
+        producer.publish_message(routing_key='fast_queue', message=message_to_publish)
         return {"insertion": ack}
 
 
