@@ -14,7 +14,7 @@ import threading
 producer = RabbitMQProducer("py_queue")
 consumer = RabbitMQConsumer("py_queue")
 
-Mongo_uri = "mongodb://localhost:27017"
+Mongo_uri = "mongodb://172.17.0.1:27017"
 
 consumer_thread = threading.Thread(target=consumer.start_consuming)
 consumer_thread.start()   

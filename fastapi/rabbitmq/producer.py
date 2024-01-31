@@ -80,9 +80,10 @@ import json
 
 
 class RabbitMQProducer:
-    def __init__(self, queue_name):
+    def __init__(self, queue_name, username='guest', password='guest'):
+        credentials = pika.PlainCredentials(username, password)
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters('localhost', port=5672))
+            pika.ConnectionParameters('172.17.0.1', port=5672, credentials=credentials))
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue=queue_name)
 
