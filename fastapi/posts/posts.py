@@ -1,25 +1,24 @@
-from fastapi import HTTPException, Depends, APIRouter, FastAPI
+from fastapi import HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from starlette import status
 from .database import get_db
-from typing import List, Union, Annotated
-from pydantic import BaseModel
-from .database import engine, Base
+from typing import List
 from .keycloak import oauth2_scheme
 from rabbitmq.producer import RabbitMQProducer
 from rabbitmq.consumer import RabbitMQConsumer
 from . import models
 from . import schema
 import threading
+import logging
 
-producer = RabbitMQProducer("py_queue")
-consumer = RabbitMQConsumer("py_queue")
+
+producer = RabbitMQProducer("postsqueue")
+consumer = RabbitMQConsumer("slackqueue")
          
-
 consumer_thread = threading.Thread(target=consumer.start_consuming)
 consumer_thread.start()  
 
-
+logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix='/posts',
@@ -27,38 +26,41 @@ router = APIRouter(
 )
 
 
-
 @router.get('/', response_model=List[schema.CreatePost])
-def test_posts(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+async def post(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
 
-    post = db.query(models.Post).all()
-    return  post
+    posts = db.query(models.Post).all()
+    logger.info(f"request / endpoint!")
+    return  posts
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=List[schema.CreatePost])
-def test_posts_sent(post_post:schema.CreatePost, db:Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+async def posts_sent(post_post:schema.CreatePost, db:Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
 
     new_post = models.Post(**post_post.dict())
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
    
+    logger.info(f"request / endpoint!")
+       
     message_to_publish = post_post.dict()
-    producer.publish_message(routing_key='py_queue', message=message_to_publish)
+    producer.publish_message(routing_key='pro_queue', message=message_to_publish)
     
     return [new_post]
 
 
 @router.get('/{id}', response_model=schema.CreatePost, status_code=status.HTTP_200_OK)
-def get_test_one_post(id:int ,db:Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+async def get_one_post(id:int ,db:Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
 
     idv_post = db.query(models.Post).filter(models.Post.id == id).first()
 
     if idv_post is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"The id: {id} you requested for does not exist")
+    logger.info(f"request / endpoint!")
     return idv_post
 
 @router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
-def delete_test_post(id:int, db:Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+async def delete_post(id:int, db:Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
 
     deleted_post = db.query(models.Post).filter(models.Post.id == id)
 
@@ -68,11 +70,11 @@ def delete_test_post(id:int, db:Session = Depends(get_db), token: str = Depends(
                             detail=f"The id: {id} you requested for does not exist")
     deleted_post.delete(synchronize_session=False)
     db.commit()
-
+    logger.info(f"request / endpoint!")
 
 
 @router.put('/posts/{id}', response_model=schema.CreatePost)
-def update_test_post(update_post:schema.PostBase, id:int, db:Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+async def update_post(update_post:schema.PostBase, id:int, db:Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
 
     updated_post =  db.query(models.Post).filter(models.Post.id == id)
 
@@ -80,6 +82,6 @@ def update_test_post(update_post:schema.PostBase, id:int, db:Session = Depends(g
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"The id:{id} does not exist")
     updated_post.update(update_post.dict(), synchronize_session=False)
     db.commit()
-
+    logger.info(f"request / endpoint!")
 
     return  updated_post.first()
