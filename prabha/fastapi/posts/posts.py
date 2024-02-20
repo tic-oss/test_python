@@ -1,34 +1,33 @@
-from fastapi import HTTPException, Depends, APIRouter, FastAPI
+from typing import List
+from fastapi import HTTPException, Depends
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from starlette import status
-from .database import get_db
-from typing import List, Union, Annotated
-from pydantic import BaseModel
-from .database import engine, Base
-from .keycloak import oauth2_scheme
-from rabbitmq.producer import RabbitMQProducer
-from rabbitmq.consumer import RabbitMQConsumer
 from . import models
 from . import schema
-import threading
+from fastapi import APIRouter
+from .database import get_db
+from typing import Union
+from fastapi import FastAPI
+from pydantic import BaseModel
 
-producer = RabbitMQProducer("py_queue")
-consumer = RabbitMQConsumer("py_queue")
-         
+from fastapi import Depends, FastAPI
+from .database import engine, Base
+from .keycloak import oauth2_scheme
+import os
+from dotenv import load_dotenv
 
-consumer_thread = threading.Thread(target=consumer.start_consuming)
-consumer_thread.start()  
+load_dotenv()
 
 
-
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=os.getenv("tokenUrl"))
 router = APIRouter(
     prefix='/posts',
     tags=['Posts']
 )
 
 
-
-@router.get('/', response_model=List[schema.CreatePost])
+@router.get('/getall', response_model=List[schema.CreatePost])
 def test_posts(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
 
     post = db.query(models.Post).all()
@@ -41,10 +40,6 @@ def test_posts_sent(post_post:schema.CreatePost, db:Session = Depends(get_db), t
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
-   
-    message_to_publish = post_post.dict()
-    producer.publish_message(routing_key='py_queue', message=message_to_publish)
-    
     return [new_post]
 
 

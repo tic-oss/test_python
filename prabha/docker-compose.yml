@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  eureka-server:
+    image: jhipster/jhipster-registry:v7.4.0
+    ports:
+      - "8761:8761"
+    networks:
+      - network-mservice
+    depends_on:
+      - postgres-db
+
+  microservice1:
+    image: microservice1:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - EUREKA_SERVER_URL=http://admin:admin@eureka-server:8761/eureka/
+      - DATABASE_URL=postgresql://pgadmin:root@172.20.0.2:5432/ms1_db
+      - DATABASE_USERNAME=pgadmin
+      - DATABASE_PASSWORD=root
+    networks:
+      - network-mservice
+    depends_on:
+      - eureka-server
+
+  microservice2:
+    image: microservice2:latest
+    ports:
+      - "8001:8001"
+    environment:
+      - EUREKA_SERVER_URL=http://admin:admin@eureka-server:8761/eureka/
+      - DATABASE_URL=postgresql://pgadmin:root@localhost:5432/ms2_db
+      - DATABASE_USERNAME=pgadmin
+      - DATABASE_PASSWORD=root
+    networks:
+      - network-mservice
+    depends_on:
+      - eureka-server
+
+  postgres-db:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=pgadmin
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=ms1_db
+      - POSTGRES_DB=ms2_db
+    networks:
+      - network-mservice
+
+volumes:
+  postgres_data:
+
+networks:
+  network-mservice:
