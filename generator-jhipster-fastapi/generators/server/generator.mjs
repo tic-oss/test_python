@@ -156,37 +156,32 @@ export default class extends ServerGenerator {
           rabbitmq: this.rabbitmq,
           postgresql: this.postgress,
           mongodb: this.mongodb,
-          restServer: restServer,
-          restClient: restClient,
-          rabbitmqServer: rabbitmqServer,
-          rabbitmqClient: rabbitmqClient,
+          // restServer: restServer,
+          // restClient: restClient,
+          // rabbitmqServer: rabbitmqServer,
+          // rabbitmqClient: rabbitmqClient,
         };
 
         const templatePaths = [
-          { src: 'docker', dest: 'docker' },
-          { src: 'proto', dest: 'proto' },
-          { src: 'go.mod', dest: 'go.mod' },
-          { src: 'main.go', dest: 'main.go' },
+          { src: 'posts', dest: 'posts' },
+          { src: 'venv', dest: 'venv' },
           { src: 'Dockerfile', dest: 'Dockerfile' },
-          { src: 'Makefile', dest: 'Makefile' },
+          { src: 'log_config.yaml', dest: 'log_config.yaml' },
+          { src: 'main.py', dest: 'main.py' },
+          { src: 'requirements.txt', dest: 'requirements.txt' },
           { src: 'README.md', dest: 'README.md' },
-          { src: 'config', dest: 'config' },
-          { src: 'resources', dest: 'resources' },
-          { src: 'controllers', dest: 'controllers' },
+        
         ];
         const conditionalTemplates = [
           { condition: this.auth, src: 'auth', dest: 'auth' },
-          { condition: this.postgress, src: 'handler/db.go', dest: 'handler/db.go' },
-          { condition: this.mongodb, src: 'handler/mongodb.go', dest: 'handler/mongodb.go' },
-          { condition: this.postgress, src: 'db/config.go', dest: 'db/config.go' },
-          { condition: this.mongodb, src: 'db/mongoconfig.go', dest: 'db/mongoconfig.go' },
-          { condition: this.eureka, src: 'eurekaregistry/helper', dest: 'eurekaregistry/helper' },
-          { condition: this.eureka, src: 'eurekaregistry/DiscoveryManager.go', dest: 'eurekaregistry/DiscoveryManager.go' },
-          { condition: this.eureka, src: 'eurekaregistry/RegistrationManager.go', dest: 'eurekaregistry/RegistrationManager.go' },
-          { condition: this.eureka, src: 'eurekaregistry/EurekaRegistrationManager.go', dest: 'eurekaregistry/EurekaRegistrationManager.go' },
-          { condition: restServer?.length, src: 'eurekaregistry/ServiceDiscovery.go',dest: 'eurekaregistry/ServiceDiscovery.go' },
-          { condition: this.postgress, src: 'migrate', dest: 'migrate' },+
           { condition: this.rabbitmq, src: 'rabbitmq', dest: 'rabbitmq' },
+          { condition: this.postgress, src: 'db/postgres/database.py', dest: 'db/postgres/database.py' },
+          { condition: this.postgress, src: 'db/postgres/models.py', dest: 'db/postgres/models.py' },
+          { condition: this.postgress, src: 'db/postgres/schema.py', dest: 'db/postgres/schema.py' },
+          { condition: this.mongodb, src: 'db/mongo/database.py', dest: 'db/mongo/database.py' },
+          { condition: this.mongodb, src: 'db/mongo/models.py', dest: 'db/mongo/models.py' },
+          { condition: this.eureka, src: 'eureka.py', dest: 'eureka.py' },+
+          
         ];
         templatePaths.forEach(({ src, dest }) => {
           this.fs.copyTpl(this.templatePath(src), this.destinationPath(dest), templateVariables);
@@ -196,38 +191,38 @@ export default class extends ServerGenerator {
             this.fs.copyTpl(this.templatePath(src), this.destinationPath(dest), templateVariables);
           }
         });
-        if (rabbitmqServer?.length) {
-          for (var i = 0; i < rabbitmqServer.length; i++) {
-            var server = rabbitmqServer[i].charAt(0).toUpperCase() + rabbitmqServer[i].slice(1);
-            var client = this.baseName.charAt(0).toUpperCase() + this.baseName.slice(1);
-            this.fs.copyTpl(
-              this.templatePath('rabbitmq/consumer.py'),
-              this.destinationPath('rabbitmq/' + 'RabbitMQConsumer' + server + 'To' + client + '.py'),
-              {
-                packageName: this.packageName,
-                rabbitmqServer: server,
-                rabbitmqClient: client,
-                baseName: this.baseName,
-              }
-            );
-          }
-        }
-        if (rabbitmqClient?.length) {
-          for (var i = 0; i < rabbitmqClient.length; i++) {
-            var server = this.baseName.charAt(0).toUpperCase() + this.baseName.slice(1);
-            var client = rabbitmqClient[i].charAt(0).toUpperCase() + rabbitmqClient[i].slice(1);
-            this.fs.copyTpl(
-              this.templatePath('rabbitmq/producer.py'),
-              this.destinationPath('rabbitmq/' + 'RabbitMQProducer' + server + 'To' + client + '.py'),
-              {
-                packageName: this.packageName,
-                rabbitmqClient: client,
-                rabbitmqServer: server,
-                baseName: this.baseName,
-              }
-            );
-          }
-        }
+        // if (rabbitmqServer?.length) {
+        //   for (var i = 0; i < rabbitmqServer.length; i++) {
+        //     var server = rabbitmqServer[i].charAt(0).toUpperCase() + rabbitmqServer[i].slice(1);
+        //     var client = this.baseName.charAt(0).toUpperCase() + this.baseName.slice(1);
+        //     this.fs.copyTpl(
+        //       this.templatePath('rabbitmq/consumer.py'),
+        //       this.destinationPath('rabbitmq/' + 'RabbitMQConsumer' + server + 'To' + client + '.py'),
+        //       {
+        //         packageName: this.packageName,
+        //         rabbitmqServer: server,
+        //         rabbitmqClient: client,
+        //         baseName: this.baseName,
+        //       }
+        //     );
+        //   }
+        // }
+        // if (rabbitmqClient?.length) {
+        //   for (var i = 0; i < rabbitmqClient.length; i++) {
+        //     var server = this.baseName.charAt(0).toUpperCase() + this.baseName.slice(1);
+        //     var client = rabbitmqClient[i].charAt(0).toUpperCase() + rabbitmqClient[i].slice(1);
+        //     this.fs.copyTpl(
+        //       this.templatePath('rabbitmq/producer.py'),
+        //       this.destinationPath('rabbitmq/' + 'RabbitMQProducer' + server + 'To' + client + '.py'),
+        //       {
+        //         packageName: this.packageName,
+        //         rabbitmqClient: client,
+        //         rabbitmqServer: server,
+        //         baseName: this.baseName,
+        //       }
+        //     );
+        //   }
+        // }
       },
     };
   }

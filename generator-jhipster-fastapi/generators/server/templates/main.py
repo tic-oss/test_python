@@ -1,8 +1,8 @@
-from posts.database import engine
+from db.postgres.database import engine
 from fastapi import FastAPI
-import posts.models
+#import db.postgres.models
 import posts.posts
-import posts.schema
+#import db.postgres.schema
 import eureka
 
 app = FastAPI()
