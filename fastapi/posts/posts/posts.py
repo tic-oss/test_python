@@ -10,15 +10,19 @@ from . import models
 from . import schema
 import threading
 import logging
-
+logger = logging.getLogger(__name__)
 
 producer = RabbitMQProducer(queue_name="postsqueue")
-consumer = RabbitMQConsumer(queue_name="slackqueue")
-         
-consumer_thread = threading.Thread(target=consumer.start_consuming, args=(consumer.queue_name,))
-consumer_thread.start()  
 
-logger = logging.getLogger(__name__)
+# consumer = RabbitMQConsumer(queue_name="slackqueue")         
+# consumer_thread = threading.Thread(target=consumer.start_consuming)
+# consumer_thread.start()  
+
+
+consumer = RabbitMQConsumer(queue_name="postsqueue")         
+consumer_thread = threading.Thread(target=consumer.start_consuming)
+consumer_thread.start() 
+
 
 router = APIRouter(
     prefix='/posts',
@@ -46,7 +50,7 @@ async def posts_sent(post_post:schema.CreatePost, db:Session = Depends(get_db), 
        
     message_to_publish = post_post.dict()
     producer.publish_message(routing_key='pro_queue', message=message_to_publish)
-    
+    # logger.infor("published to queue with routing key")
     return [new_post]
 
 
