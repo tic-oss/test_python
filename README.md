@@ -1,1 +1,44 @@
-# test_python
+ 
+# run Eureka server (in path : cd prabha/ ) ,using this command:            
+
+     docker compose -f docker/jhipster-registry.yml up 
+     docker compose -f docker/jhipster-registry.yml down   
+
+# run keycloak (in path : cd prabha/ ), using this command:   
+
+     docker compose -f docker/keycloak.yml up 
+     docker compose -f docker/keycloak.yml down 
+
+# or run both keycloak & eureka server in stack using this command:
+
+   docker compose -f prabha/docker/services.yml up 
+   docker compose -f prabha/docker/services.yml down 
+
+
+# run  rabbitmq server using this command: 
+
+docker run -d --name my-rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+
+
+ # run microservice-1 (posts) using this command: (path : cd fastapi/posts)
+  uvicorn main:app --port 9001
+
+ 
+ # run microservice-2 (slack) using this command:  (path : cd fastapi/slack)
+  uvicorn main:app --port 9000
+
+
+# run databases using this commands :
+
+   
+   # 1. create network in docker using this command: 
+
+         docker network create my_network
+
+   # 2. run postgres, using this command:
+
+docker run -d  --name mongodb  -p 27017:27017 --network my_network mongo:latest
+
+   # 3. run mongo db, using this command:
+
+docker run -d --name postgresql -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=pass123 -e POSTGRES_DB=python -p 5432:5432 --network my_network  postgres:latest
