@@ -1,46 +1,36 @@
 from bson import ObjectId
-from fastapi import  status, Depends, HTTPException, APIRouter
+from fastapi import APIRouter, Depends, HTTPException, status
 from pymongo import MongoClient
 from typing import List
 from .keycloak import oauth2_scheme
 from .database import MSG_COLLECTION, DB
 from .models import Message
-from rabbitmq.producer import RabbitMQProducer
 from rabbitmq.consumer import RabbitMQConsumer
 import threading
 import logging
 from dotenv import load_dotenv
 import os
 
-
 load_dotenv()
-
-MONGO_URI = os.getenv("MONGO_URI")
-SLACK_PORT= os.getenv("POST_PORT")
-
-producer = RabbitMQProducer(queue_name="pro_queue")
-consumer = RabbitMQConsumer(queue_name="con_queue")
-
-Mongo_uri = MONGO_URI
-
-consumer_thread = threading.Thread(target=consumer.start_consuming, args=(consumer.queue_name,))
-consumer_thread.start()   
-
-logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix='/slack',
     tags=['slack']
-
 )
 
+MONGO_URI = os.getenv("MONGO_URI")
+SLACK_PORT= os.getenv("POST_PORT")
+
+
+Mongo_uri = MONGO_URI
+
+logger = logging.getLogger(__name__)
 
 @router.get("/status")
 async def get_status(token: str = Depends(oauth2_scheme)):
     """Get status of messaging server."""
     logger.info(f"request / endpoint!")
     return {"status": "running"}
-
 
 @router.get("/channels", response_model=List[str])
 async def get_channels(token: str = Depends(oauth2_scheme)):
@@ -52,18 +42,17 @@ async def get_channels(token: str = Depends(oauth2_scheme)):
         logger.info(f"request / endpoint!")
         return distinct_channel_list
 
-
 @router.get("/messages/{channel}", response_model=List[Message])
 async def get_messages(channel: str, token: str = Depends(oauth2_scheme)):
     logger.info(f"request / endpoint!")
     """Get all messages for the specified channel."""
-    with MongoClient(Mongo_uri) as client:
+    with MongoClient(MONGO_URI) as client:
         msg_collection = client[DB][MSG_COLLECTION]
         msg_list = msg_collection.find({"channel": channel})
         response_msg_list = []
         for msg in msg_list:
             response_msg_list.append(Message(**msg))
-        
+
         return response_msg_list
 
 
@@ -79,7 +68,7 @@ async def post_message(message: Message, token: str = Depends(oauth2_scheme)):
         logger.info(f"request / endpoint!")
 
         message_to_publish = message.dict()
-        producer.publish_message(routing_key='pro_queue', message=message_to_publish)
+        # producer.publish_message(routing_key='pro_queue', message=message_to_publish)
         
         return {"insertion": ack}
 
@@ -111,4 +100,4 @@ async def delete_message(message_id: str, token: str = Depends(oauth2_scheme)):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Message not found")
         
 
-    
+   

@@ -59,3 +59,14 @@ def get_microservice_url(app_name: str) -> str:
 def get_other():
     microservice_url = get_microservice_url(OTHER_SERVICE_NAME)
     return {"url":microservice_url}
+# @router.get("/slack")
+# def get_other():
+#     microservice_url = get_microservice_url(OTHER_SERVICE_NAME)
+#     # ip adreess of slack +port 
+#     # http://+ ipadress +  : + portt 
+
+#     # get slacks status 
+#     #/ status 
+#     #http://+ ipadress +  : + portt +/ staus 
+
+#     return {"response from slack micr sercice ":microservice_url}
