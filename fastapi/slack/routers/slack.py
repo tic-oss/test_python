@@ -1,11 +1,11 @@
 from fastapi import  status, Depends, HTTPException, APIRouter
 from pymongo import MongoClient
 from typing import List
-from .keycloak import oauth2_scheme
-from .database import MSG_COLLECTION, DB
-from .models import Message
-from rabbitmq.producer import RabbitMQProducer
-from rabbitmq.consumer import RabbitMQConsumer
+from services.keycloak import oauth2_scheme
+from backend.database import MSG_COLLECTION, DB
+from models.models import Message
+from services.rabbitmq.producer import RabbitMQProducer
+from services.rabbitmq.consumer import RabbitMQConsumer
 import threading
 import logging
 from dotenv import load_dotenv

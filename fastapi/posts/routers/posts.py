@@ -1,13 +1,13 @@
 from fastapi import HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from starlette import status
-from .database import get_db
+from backend.database import get_db
 from typing import List
-from .keycloak import oauth2_scheme
-from rabbitmq.producer import RabbitMQProducer
-from rabbitmq.consumer import RabbitMQConsumer
-from . import models
-from . import schema
+from services.keycloak import oauth2_scheme
+from services.rabbitmq.producer import RabbitMQProducer
+from services.rabbitmq.consumer import RabbitMQConsumer
+from models import models
+from schemas import schema
 import threading
 import logging
 

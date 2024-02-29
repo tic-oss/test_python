@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-import slack.slack
-import eureka
+from routers import slack
+from services import eureka
 
 app = FastAPI()
 

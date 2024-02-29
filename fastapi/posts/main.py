@@ -1,9 +1,9 @@
-from posts.database import engine
+from backend.database import engine
 from fastapi import FastAPI
-import posts.models
-import posts.posts
-import posts.schema
-import eureka
+from models import models
+from routers import posts
+from schemas import schema
+from services import eureka
 
 app = FastAPI()
 
