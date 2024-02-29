@@ -1,9 +1,16 @@
+import json
+import xmltodict
+import logging
+from urllib import response
 from py_eureka_client import eureka_client
 from dotenv import load_dotenv
 from fastapi import APIRouter
 import os
 import requests
 import xml.etree.ElementTree as ET
+from posts.keycloak import oauth2_scheme
+from fastapi import Depends
+# from fastapi.security import OAuth2PasswordBearer
 
 load_dotenv()
 
@@ -12,7 +19,8 @@ APP_NAME = os.getenv("APP_NAME")
 POST_PORT = os.getenv("POST_PORT")
 OTHER_SERVICE_NAME = os.getenv("OTHER_SERVICE_NAME")
 EUREKA_SERVER_INSTANCES = os.getenv("EUREKA_SERVER_INSTANCES")
-
+PUBLIC_IP = os.getenv("PUBLIC_IP", "0.0.0.0") 
+OTHER_SERVICE_URL=os.getenv("OTHER_SERVICE_URL")
 router = APIRouter(
     prefix='/posts',
     tags=['Posts']
@@ -22,7 +30,8 @@ router = APIRouter(
 async def startup_event():
     await eureka_client.init_async(eureka_server=EUREKA_SERVER,
                                    app_name=APP_NAME,
-                                   instance_port=int(POST_PORT))
+                                   instance_port=int(POST_PORT),
+                                   instance_ip=PUBLIC_IP)
     
 async def shutdown_event():
     await eureka_client.fini_async()
@@ -38,35 +47,70 @@ async def shutdown():
 
 
 
-# Endpoint to provide Slack URL
-def get_microservice_url(app_name: str) -> str:
-    response = requests.get(EUREKA_SERVER_INSTANCES)
-    if response.status_code == 200:
-        root = ET.fromstring(response.content)
-        for application in root.findall("./application"):
-            name = application.find("name").text
-            if name == app_name:
-                instance = application.find("./instance")
-                home_page_url = instance.find("homePageUrl").text
-                return home_page_url
-        return None
-    else:
-        raise Exception(f"Failed to fetch applications from Eureka server: {response.status_code}")
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-# Example usage:
-    
+
 @router.get("/get_other")
 def get_other():
-    microservice_url = get_microservice_url(OTHER_SERVICE_NAME)
-    return {"url":microservice_url}
-# @router.get("/slack")
-# def get_other():
-#     microservice_url = get_microservice_url(OTHER_SERVICE_NAME)
-#     # ip adreess of slack +port 
-#     # http://+ ipadress +  : + portt 
+    response = requests.get(EUREKA_SERVER_INSTANCES)
+    app_name = OTHER_SERVICE_NAME
+    xml_string = response.text  # Extract XML content from the response
+    # print("XML Response:", xml_string)  # Debug print
+    response_slack_url = xml_to_json(xml_string, app_name)
+    # print("Parsed JSON Data:", json_data)  # Debug print
+    return {"response_slack_url": response_slack_url}
 
-#     # get slacks status 
-#     #/ status 
-#     #http://+ ipadress +  : + portt +/ staus 
+def xml_to_json(xml_string, app_name, token: str = Depends(oauth2_scheme)):
+    # Parse XML string into a Python dictionary
+    data_dict = xmltodict.parse(xml_string)
+    # print(data_dict)
+    json_string = json.dumps(data_dict)
+    # print(json_string)
+    json_file= json.loads(json_string)
 
-#     return {"response from slack micr sercice ":microservice_url}
+    # Extract application information
+    applications = json_file.get("applications", {}).get("application", [])
+   
+    for application in applications:
+        if application.get("name") == app_name:
+            instances = application.get("instance", [])
+            if not isinstance(instances, list):
+                instances = [instances]
+            for instance in instances:
+                ip_address = instance.get("ipAddr", "")
+                port = instance.get("port", {}).get("#text", "")
+                base_url = f"http://{ip_address}:{port}"
+                response_slack_url = f"{base_url}{OTHER_SERVICE_URL}"
+                print(response_slack_url)
+                response = requests.get(response_slack_url , headers={"Authorization": f"Bearer {token}"})
+                # print(response.json())
+                return response.json()
+           
+    return {"error": "No instance found for the given app name"}
+
+# @router.get("/get_other")
+# def get_microservice_info():
+#     response = requests.get(EUREKA_SERVER_INSTANCES)
+#     app_name=OTHER_SERVICE_NAME
+#     xml_string = response.text
+#     microservice_info = parse_microservice_info(xml_string, app_name)
+#     return {"microservice_info": microservice_info}
+
+# def parse_microservice_info(xml_string, app_name):
+#     data_dict = xmltodict.parse(xml_string)
+#     applications = data_dict.get("applications", {}).get("application", [])
+#     for application in applications:
+#         name = application.get("name", "")
+#         if name == app_name:
+#             instance = application.get("instance", {})
+#             ip_address = instance.get("ipAddr", "")
+#             port = instance.get("port", {}).get("#text", "")
+#             return {"ip_address": ip_address, "port": port}
+#     return {"error": "Application not found"}
+
+
+
+
+
+

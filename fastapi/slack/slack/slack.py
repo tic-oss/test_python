@@ -5,7 +5,7 @@ from typing import List
 from .keycloak import oauth2_scheme
 from .database import MSG_COLLECTION, DB
 from .models import Message
-from rabbitmq.consumer import RabbitMQConsumer
+# from rabbitmq.consumer import RabbitMQConsumer
 import threading
 import logging
 from dotenv import load_dotenv

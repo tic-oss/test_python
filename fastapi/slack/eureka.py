@@ -12,6 +12,7 @@ APP_NAME = os.getenv("APP_NAME")
 SLACK_PORT= os.getenv("SLACK_PORT")
 OTHER_SERVICE_NAME = os.getenv("OTHER_SERVICE_NAME")
 EUREKA_SERVER_INSTANCES = os.getenv("EUREKA_SERVER_INSTANCES")
+PUBLIC_IP = os.getenv("PUBLIC_IP", "0.0.0.0") 
 
 router = APIRouter(
     prefix='/slack',
@@ -21,7 +22,8 @@ router = APIRouter(
 async def startup_event():
     await eureka_client.init_async(eureka_server=EUREKA_SERVER,
                                    app_name=APP_NAME,
-                                   instance_port=int(SLACK_PORT))
+                                   instance_port=int(SLACK_PORT),
+                                   instance_ip=PUBLIC_IP)
     
 async def shutdown_event():
     await eureka_client.fini_async()

@@ -4,6 +4,7 @@ import posts.models
 import posts.posts
 import posts.schema
 import eureka
+import uvicorn
 
 app = FastAPI()
 
@@ -18,3 +19,4 @@ app.include_router(eureka.router)
 # posts
 posts.models.Base.metadata.create_all(bind=engine)
 app.include_router(posts.posts.router)
+
