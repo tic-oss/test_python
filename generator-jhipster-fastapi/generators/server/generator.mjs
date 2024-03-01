@@ -149,7 +149,6 @@ export default class extends ServerGenerator {
         }
         const templateVariables = {
           serverPort: this.serverPort,
-          packageName: this.packageName,
           baseName: this.baseName,
           auth: this.auth,
           eureka: this.eureka,
@@ -163,24 +162,23 @@ export default class extends ServerGenerator {
         };
 
         const templatePaths = [
-          { src: 'posts', dest: 'posts' },
           { src: 'venv', dest: 'venv' },
           { src: 'Dockerfile', dest: 'Dockerfile' },
-          { src: 'log_config.yaml', dest: 'log_config.yaml' },
           { src: 'main.py', dest: 'main.py' },
           { src: 'requirements.txt', dest: 'requirements.txt' },
+          { src: 'services/log_config.yaml', dest: 'services/log_config.yaml' },
+          { src: 'routers/posts.py', dest: 'routers/posts.py' },
           { src: 'README.md', dest: 'README.md' },
+
         
         ];
         const conditionalTemplates = [
-          { condition: this.auth, src: 'auth', dest: 'auth' },
-          { condition: this.rabbitmq, src: 'rabbitmq', dest: 'rabbitmq' },
-          { condition: this.postgress, src: 'db/postgres/database.py', dest: 'db/postgres/database.py' },
-          { condition: this.postgress, src: 'db/postgres/models.py', dest: 'db/postgres/models.py' },
-          { condition: this.postgress, src: 'db/postgres/schema.py', dest: 'db/postgres/schema.py' },
-          { condition: this.mongodb, src: 'db/mongo/database.py', dest: 'db/mongo/database.py' },
-          { condition: this.mongodb, src: 'db/mongo/models.py', dest: 'db/mongo/models.py' },
-          { condition: this.eureka, src: 'eureka.py', dest: 'eureka.py' },+
+          { condition: this.auth, src: 'services/keycloak.py', dest: 'services/keycloak.py' },
+          { condition: this.rabbitmq, src: 'services/rabbitmq', dest: 'services/rabbitmq' },
+          { condition: this.postgress, src: 'backend/database.py', dest: 'backend/database.py' },
+          { condition: this.postgress, src: 'models/models.py', dest: 'models/models.py' },
+          { condition: this.postgress, src: 'schemas/schema.py', dest: 'schemas/schema.py' },
+          { condition: this.eureka, src: 'services/eureka.py', dest: 'services/eureka.py' },
           
         ];
         templatePaths.forEach(({ src, dest }) => {

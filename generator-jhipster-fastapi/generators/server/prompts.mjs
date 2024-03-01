@@ -146,8 +146,6 @@ const {
 export async function askForServerSideOpts() {
   if (this.options.fromJdl){ 
       this.serverPort=this.jhipsterConfigWithDefaults.serverPort;
-      this.packageName=this.jhipsterConfigWithDefaults.packageName;
-      this.baseName=this.jhipsterConfigWithDefaults.baseName;
       this.auth=(this.jhipsterConfigWithDefaults.authenticationType=="oauth2")
       this.eureka=(this.jhipsterConfigWithDefaults.serviceDiscoveryType=="eureka")
       this.rabbitmq=(this.jhipsterConfigWithDefaults.messageBroker=="rabbitmq")
@@ -167,7 +165,7 @@ export async function askForServerSideOpts() {
         'As you are running in a microservice architecture, on which port would like your server to run? It should be unique to avoid port conflicts.',
       default: defaultServerPort,
     },
-    {
+    /**{
       type: 'input',
       name: PACKAGE_NAME,
       validate: input =>
@@ -177,7 +175,7 @@ export async function askForServerSideOpts() {
       message: 'What is your default go package name?',
       default:  this.jhipsterConfigWithDefaults.packageName,
       store: true,
-    },
+    },*/
     {
       when: () => applicationType === 'gateway' || applicationType === 'microservice',
       type: 'list',
@@ -324,8 +322,6 @@ export async function askForServerSideOpts() {
 
     return this.prompt(prompts).then(answers=>{
       this.serverPort=answers.serverPort;
-      this.packageName=answers.packageName;
-      this.baseName=this.jhipsterConfig.baseName;
       this.auth=(answers.authenticationType=='oauth2')
       this.eureka=(answers.serviceDiscoveryType=='eureka')
       this.rabbitmq=(answers.messageBroker=='rabbitmq')
