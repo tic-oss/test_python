@@ -5,18 +5,14 @@ from backend.database import get_db
 from typing import List
 from services.keycloak import oauth2_scheme
 from services.rabbitmq.producer import RabbitMQProducer
-from services.rabbitmq.consumer import RabbitMQConsumer
+
 from models import models
 from schemas import schema
 import threading
 import logging
 
 
-producer = RabbitMQProducer(queue_name="postsqueue")
-consumer = RabbitMQConsumer(queue_name="slackqueue")
-         
-consumer_thread = threading.Thread(target=consumer.start_consuming, args=(consumer.queue_name,))
-consumer_thread.start()  
+producer = RabbitMQProducer(exchange_name="direct_logs") 
 
 logger = logging.getLogger(__name__)
 

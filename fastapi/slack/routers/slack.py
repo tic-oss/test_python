@@ -4,8 +4,6 @@ from typing import List
 from services.keycloak import oauth2_scheme
 from backend.database import MSG_COLLECTION, DB
 from models.models import Message
-from services.rabbitmq.producer import RabbitMQProducer
-from services.rabbitmq.consumer import RabbitMQConsumer
 import threading
 import logging
 from dotenv import load_dotenv
@@ -17,13 +15,9 @@ load_dotenv()
 MONGO_URI = os.getenv("MONGO_URI")
 SLACK_PORT= os.getenv("POST_PORT")
 
-producer = RabbitMQProducer(queue_name="pro_queue")
-consumer = RabbitMQConsumer(queue_name="con_queue")
 
 Mongo_uri = MONGO_URI
-
-consumer_thread = threading.Thread(target=consumer.start_consuming, args=(consumer.queue_name,))
-consumer_thread.start()   
+ 
 
 logger = logging.getLogger(__name__)
 
@@ -75,10 +69,7 @@ async def post_message(message: Message, token: str = Depends(oauth2_scheme)):
         result = msg_collection.insert_one(message.dict())
         ack = result.acknowledged
 
-        logger.info(f"request / endpoint!")
-
-        message_to_publish = message.dict()
-        producer.publish_message(routing_key='pro_queue', message=message_to_publish)
+        logger.info(f"request / endpoint!")      
         
         return {"insertion": ack}
 

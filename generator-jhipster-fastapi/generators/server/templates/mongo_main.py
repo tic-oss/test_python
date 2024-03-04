@@ -11,4 +11,3 @@ app = FastAPI()
 app.include_router(eureka.router)
 
 # slack
-app.include_router(slack.slack.router)
