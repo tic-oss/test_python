@@ -165,6 +165,7 @@ export default class extends ServerGenerator {
           { src: 'Dockerfile', dest: 'Dockerfile' },
           { src: 'requirements.txt', dest: 'requirements.txt' },
           { src: 'services/log_config.yaml', dest: 'services/log_config.yaml' },
+          { src: 'main.py', dest: 'main.py' },
           { src: '.env', dest: '.env' },
           { src: 'README.md', dest: 'README.md' },
 
@@ -173,17 +174,16 @@ export default class extends ServerGenerator {
         const conditionalTemplates = [
           { condition: this.auth, src: 'services/keycloak.py', dest: 'services/keycloak.py' },
           { condition: this.rabbitmq, src: 'services/rabbitmq', dest: 'services/rabbitmq' },
-          { condition: this.postgress, src: 'backend/postgres/database.py', dest: 'backend/database.py' },
-          { condition: this.postgress, src: 'models/postgres/models.py', dest: 'models/models.py' },
+          { condition: this.postgress, src: 'backend/database.py', dest: 'backend/database.py' },
+          { condition: this.postgress, src: 'models/models.py', dest: 'models/models.py' },
           { condition: this.postgress, src: 'routers/postgres/posts.py', dest: 'routers/posts.py' },
           { condition: this.postgress, src: 'schemas/schema.py', dest: 'schemas/schema.py' },
-          { condition: this.postgress, src: 'main.py', dest: 'main.py' },
-          { condition: this.eureka, src: 'services/postgres/eureka.py', dest: 'services/eureka.py' },
-          { condition: this.mongodb, src: 'backend/mongo/database.py', dest: 'backend/database.py' },
-          { condition: this.mongodb, src: 'models/mongo/models.py', dest: 'models/models.py' },
+          { condition: this.eureka, src: 'services/eureka.py', dest: 'services/eureka.py' },
+          { condition: this.mongodb, src: 'backend/database.py', dest: 'backend/database.py' },
+          { condition: this.mongodb, src: 'models/models.py', dest: 'models/models.py' },
           { condition: this.mongodb, src: 'routers/mongo/slack.py', dest: 'routers/slack.py' },
-          { condition: this.eureka, src: 'services/mongo/eureka.py', dest: 'services/eureka.py' },
-          { condition: this.mongodb, src: 'mongo_main.py', dest: 'main.py' },
+          { condition: this.eureka, src: 'services/eureka.py', dest: 'services/eureka.py' },
+
           
         ];
         templatePaths.forEach(({ src, dest }) => {

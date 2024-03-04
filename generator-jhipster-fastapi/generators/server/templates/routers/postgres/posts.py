@@ -6,20 +6,23 @@ from typing import List
 <%_ if (auth){  _%>
 from services.keycloak import oauth2_scheme
 <%_ } _%>
+<%_ if (rabbitmqClient){  _%>
 from services.rabbitmq.producer import RabbitMQProducer
+<%_ } _%>
 from models import models
 from schemas import schema
 import threading
 import logging
 
+<%_ if (rabbitmqClient){  _%>
 producer = RabbitMQProducer(exchange_name="direct_logs")
-
+<%_ } _%>
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix='/<%= baseName %>',
-    tags=['Posts']
+    tags=['<%= baseName %>']
 )
 
 
@@ -44,10 +47,12 @@ async def posts_sent(post_post:schema.CreatePost, db:Session = Depends(get_db), 
     db.refresh(new_post)
    
     logger.info(f"request / endpoint!")
-       
+
+    <%_ if (rabbitmqClient){  _%>  
     message_to_publish = post_post.dict()
     producer.publish_message(routing_key='pro_queue', message=message_to_publish)
-    
+    <%_ } _%>
+
     return [new_post]
 
 

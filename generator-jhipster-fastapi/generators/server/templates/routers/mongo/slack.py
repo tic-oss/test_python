@@ -4,6 +4,9 @@ from typing import List
 <%_ if (auth){  _%>
 from services.keycloak import oauth2_scheme
 <%_ } _%>
+<%_ if (rabbitmqClient){  _%>
+from services.rabbitmq.producer import RabbitMQProducer
+<%_ } _%>
 from backend.database import MSG_COLLECTION, DB
 from models.models import Message
 import threading
@@ -12,10 +15,14 @@ from dotenv import load_dotenv
 import os
 
 
+<%_ if (rabbitmqClient){  _%>
+producer = RabbitMQProducer(exchange_name="direct_logs")
+<%_ } _%>
+
 load_dotenv()
 
 MONGO_URI = os.getenv("MONGO_URI")
-SLACK_PORT= os.getenv("POST_PORT")
+PORT= os.getenv("PORT")
 
 
 Mongo_uri = MONGO_URI
@@ -25,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix='/<%= baseName %>',
-    tags=['slack']
+    tags=['<%= baseName %>']
 
 )
 
@@ -85,9 +92,10 @@ async def post_message(message: Message):
 
         logger.info(f"request / endpoint!")
 
-        message_to_publish = message.dict()
+        <%_ if (rabbitmqClient){  _%>  
+        message_to_publish = post_post.dict()
         producer.publish_message(routing_key='pro_queue', message=message_to_publish)
-        
+        <%_ } _%>
         return {"insertion": ack}
 
 

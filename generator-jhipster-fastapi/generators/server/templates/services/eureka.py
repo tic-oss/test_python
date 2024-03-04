@@ -8,25 +8,31 @@ from services.keycloak import oauth2_scheme
 from fastapi import Depends
 import json
 import xmltodict 
+import logging
+
 
 load_dotenv()
 
 EUREKA_SERVER = os.getenv("EUREKA_SERVER")
 APP_NAME = os.getenv("APP_NAME")
-SLACK_PORT= os.getenv("SLACK_PORT")
+PORT= os.getenv("PORT")
 OTHER_SERVICE_NAME = os.getenv("OTHER_SERVICE_NAME")
 EUREKA_SERVER_INSTANCES = os.getenv("EUREKA_SERVER_INSTANCES")
 PUBLIC_IP = os.getenv("PUBLIC_IP", "0.0.0.0") 
 OTHER_SERVICE_URL=os.getenv("OTHER_SERVICE_URL")
+
+
 router = APIRouter(
-    prefix='/slack',
-    tags=['slack']
+    prefix='/<%= baseName %>',
+    tags=['<%= baseName %>']
 )
+
+
 
 async def startup_event():
     await eureka_client.init_async(eureka_server=EUREKA_SERVER,
                                    app_name=APP_NAME,
-                                   instance_port=int(SLACK_PORT),
+                                   instance_port=int(PORT),
                                    instance_ip=PUBLIC_IP)
     
 async def shutdown_event():
@@ -41,6 +47,8 @@ async def startup():
 async def shutdown():
     await shutdown_event()
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Endpoint to provide POSTS URL
 @router.get("/get_other")
