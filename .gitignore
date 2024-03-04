@@ -61,7 +61,7 @@ venv2/
 *.DS_Store
  
 # Environments
-.env
+#.env
 .env.local
 .env.*.local
 *.ini

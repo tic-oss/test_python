@@ -3,40 +3,41 @@ from sqlalchemy.orm import Session
 from starlette import status
 from backend.database import get_db
 from typing import List
+<%_ if (auth){  _%>
 from services.keycloak import oauth2_scheme
+<%_ } _%>
 from services.rabbitmq.producer import RabbitMQProducer
-from services.rabbitmq.consumer import RabbitMQConsumer
 from models import models
 from schemas import schema
 import threading
 import logging
 
+producer = RabbitMQProducer(exchange_name="direct_logs")
 
-producer = RabbitMQProducer(queue_name="postsqueue")
-consumer = RabbitMQConsumer(queue_name="slackqueue")
-         
-consumer_thread = threading.Thread(target=consumer.start_consuming, args=(consumer.queue_name,))
-consumer_thread.start()  
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(
-    prefix='/posts',
+    prefix='/<%= baseName %>',
     tags=['Posts']
 )
 
 
 
 @router.get('/', response_model=List[schema.CreatePost])
+async def post(db: Session = Depends(get_db)):
+<%_ if (auth){  _%>
 async def post(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-
+<%_ } _%>
     posts = db.query(models.Post).all()
     logger.info(f"request / endpoint!")
     return  posts
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=List[schema.CreatePost])
+async def posts_sent(post_post:schema.CreatePost, db:Session = Depends(get_db)):
+<%_ if (auth){  _%>
 async def posts_sent(post_post:schema.CreatePost, db:Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-
+<%_ } _%>
     new_post = models.Post(**post_post.dict())
     db.add(new_post)
     db.commit()
@@ -51,8 +52,10 @@ async def posts_sent(post_post:schema.CreatePost, db:Session = Depends(get_db), 
 
 
 @router.get('/{id}', response_model=schema.CreatePost, status_code=status.HTTP_200_OK)
+async def get_one_post(id:int ,db:Session = Depends(get_db)):
+<%_ if (auth){  _%>
 async def get_one_post(id:int ,db:Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-
+<%_ } _%>
     idv_post = db.query(models.Post).filter(models.Post.id == id).first()
 
     if idv_post is None:
@@ -61,7 +64,10 @@ async def get_one_post(id:int ,db:Session = Depends(get_db), token: str = Depend
     return idv_post
 
 @router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
+<%_ if (auth){  _%>
 async def delete_post(id:int, db:Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+<%_ } _%>
+async def delete_post(id:int, db:Session = Depends(get_db)):
 
     deleted_post = db.query(models.Post).filter(models.Post.id == id)
 
@@ -75,7 +81,10 @@ async def delete_post(id:int, db:Session = Depends(get_db), token: str = Depends
 
 
 @router.put('/posts/{id}', response_model=schema.CreatePost)
+async def update_post(update_post:schema.PostBase, id:int, db:Session = Depends(get_db)):
+<%_ if (auth){  _%>
 async def update_post(update_post:schema.PostBase, id:int, db:Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+<%_ } _%>
 
     updated_post =  db.query(models.Post).filter(models.Post.id == id)
 

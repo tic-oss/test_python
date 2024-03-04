@@ -1,10 +1,6 @@
-from backend.database import engine
 from fastapi import FastAPI
-from models import models
-from routers import posts
-from schemas import schema
+from routers import slack
 from services import eureka
-import uvicorn
 
 app = FastAPI()
 
@@ -14,8 +10,5 @@ app = FastAPI()
 # app.add_event_handler("shutdown", shutdown_event)
 app.include_router(eureka.router)
 
-
-
-# posts
-posts.models.Base.metadata.create_all(bind=engine)
-app.include_router(posts.posts.router)
+# slack
+app.include_router(slack.slack.router)
