@@ -12,6 +12,9 @@ from posts.keycloak import oauth2_scheme
 from fastapi import Depends
 # from fastapi.security import OAuth2PasswordBearer
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__) 
+
 load_dotenv()
 
 EUREKA_SERVER = os.getenv("EUREKA_SERVER")
@@ -47,8 +50,7 @@ async def shutdown():
 
 
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+
 
 
 @router.get("/get_other")

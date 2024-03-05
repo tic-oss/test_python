@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import pika
 import os
 import logging
-
+import slack.eureka as eureka 
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -55,5 +55,9 @@ class RabbitMQConsumer:
         self.channel.basic_consume(queue=self.queue_name, on_message_callback=self.callback)
         self.channel.start_consuming()
 
+
 consumer = RabbitMQConsumer('direct_logs', 'data_queue', ['pro_queue'])
 consumer.start_consuming()
+
+
+

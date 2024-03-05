@@ -1,18 +1,32 @@
  
-# run Eureka server (in path : cd prabha/ ) ,using this command:            
+# run Eureka server ,using this command:  (server protected by keycloak)
+   
+     docker compose -f prabha/docker/jhipster-registry.yml up 
+     docker compose -f docker/jhipster-registry.yml down 
 
-     docker compose -f docker/jhipster-registry.yml up 
-     docker compose -f docker/jhipster-registry.yml down   
-
-# run keycloak (in path : cd prabha/ ), using this command:   
+ # run keycloak, using this command:   
 
      docker compose -f docker/keycloak.yml up 
-     docker compose -f docker/keycloak.yml down 
+     docker compose -f docker/keycloak.yml down      
 
-# or run both keycloak & eureka server in stack using this command:
+# or run both keycloak & eureka server in stack using this command: (path : cd fastapi/)
 
-   docker compose -f prabha/docker/services.yml up 
-   docker compose -f prabha/docker/services.yml down 
+   docker compose -f docker/services.yml up 
+   docker compose -f docker/services.yml down 
+
+                    or 
+
+
+ # for run eureka server (without keycloak protection):     
+     docker compose -f prabha/docker/jhipster-registry.yml up 
+     docker compose -f prabha/docker/jhipster-registry.yml down 
+
+# standalone version keycloak: (cd Downloads/keycloak-23.0.3/bin)         
+      ./kc.sh start-dev    
+  
+
+
+
 
 
 # run  rabbitmq server using this command: 

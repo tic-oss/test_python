@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import slack.slack
-import eureka
-
+import slack.eureka as eureka
+# from rabbitmq.consumer import RabbitMQConsumer
 app = FastAPI()
 
 
