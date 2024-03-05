@@ -1,39 +1,32 @@
-import json
-import xmltodict
-import logging
-from urllib import response
 from py_eureka_client import eureka_client
 from dotenv import load_dotenv
 from fastapi import APIRouter
 import os
 import requests
 import xml.etree.ElementTree as ET
-from posts.keycloak import oauth2_scheme
+from slack.keycloak import oauth2_scheme
 from fastapi import Depends
-# from fastapi.security import OAuth2PasswordBearer
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__) 
+import json
+import xmltodict 
 
 load_dotenv()
 
 EUREKA_SERVER = os.getenv("EUREKA_SERVER")
 APP_NAME = os.getenv("APP_NAME")
-POST_PORT = os.getenv("POST_PORT")
+SLACK_PORT= os.getenv("SLACK_PORT")
 OTHER_SERVICE_NAME = os.getenv("OTHER_SERVICE_NAME")
 EUREKA_SERVER_INSTANCES = os.getenv("EUREKA_SERVER_INSTANCES")
 PUBLIC_IP = os.getenv("PUBLIC_IP", "0.0.0.0") 
 OTHER_SERVICE_URL=os.getenv("OTHER_SERVICE_URL")
 router = APIRouter(
-    prefix='/posts',
-    tags=['Posts']
+    prefix='/slack',
+    tags=['slack']
 )
-
 
 async def startup_event():
     await eureka_client.init_async(eureka_server=EUREKA_SERVER,
                                    app_name=APP_NAME,
-                                   instance_port=int(POST_PORT),
+                                   instance_port=int(SLACK_PORT),
                                    instance_ip=PUBLIC_IP)
     
 async def shutdown_event():
@@ -49,10 +42,7 @@ async def shutdown():
     await shutdown_event()
 
 
-
-
-
-
+# Endpoint to provide POSTS URL
 @router.get("/get_other")
 def get_other():
     response = requests.get(EUREKA_SERVER_INSTANCES)
@@ -90,29 +80,3 @@ def xml_to_json(xml_string, app_name, token: str = Depends(oauth2_scheme)):
                 return response.json()
            
     return {"error": "No instance found for the given app name"}
-
-# @router.get("/get_other")
-# def get_microservice_info():
-#     response = requests.get(EUREKA_SERVER_INSTANCES)
-#     app_name=OTHER_SERVICE_NAME
-#     xml_string = response.text
-#     microservice_info = parse_microservice_info(xml_string, app_name)
-#     return {"microservice_info": microservice_info}
-
-# def parse_microservice_info(xml_string, app_name):
-#     data_dict = xmltodict.parse(xml_string)
-#     applications = data_dict.get("applications", {}).get("application", [])
-#     for application in applications:
-#         name = application.get("name", "")
-#         if name == app_name:
-#             instance = application.get("instance", {})
-#             ip_address = instance.get("ipAddr", "")
-#             port = instance.get("port", {}).get("#text", "")
-#             return {"ip_address": ip_address, "port": port}
-#     return {"error": "Application not found"}
-
-
-
-
-
-

@@ -5,13 +5,17 @@ from typing import List
 from .keycloak import oauth2_scheme
 from .database import MSG_COLLECTION, DB
 from .models import Message
-# from rabbitmq.consumer import RabbitMQConsumer
-import threading
+import slack.eureka as eureka
+
+from rabbitmq.consumer import RabbitMQConsumer
 import logging
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
+
 
 router = APIRouter(
     prefix='/slack',
@@ -24,7 +28,6 @@ SLACK_PORT= os.getenv("POST_PORT")
 
 Mongo_uri = MONGO_URI
 
-logger = logging.getLogger(__name__)
 
 @router.get("/status")
 async def get_status(token: str = Depends(oauth2_scheme)):
