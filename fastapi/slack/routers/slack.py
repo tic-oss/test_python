@@ -2,12 +2,12 @@ from bson import ObjectId
 from fastapi import APIRouter, Depends, HTTPException, status
 from pymongo import MongoClient
 from typing import List
-from .keycloak import oauth2_scheme
-from .database import MSG_COLLECTION, DB
-from .models import Message
-import eureka
+from services.keycloak import oauth2_scheme
+from backend.database import MSG_COLLECTION, DB
+from models.models import Message
+import services.eureka as eureka
 
-from rabbitmq.consumer import RabbitMQConsumer
+from services.consumer import RabbitMQConsumer
 import logging
 from dotenv import load_dotenv
 import os
