@@ -17,7 +17,7 @@ class RabbitMQProducer:
     def __init__(self, exchange_name, username=RABBIT_USER, password=RABBIT_PS):
         credentials = pika.PlainCredentials(username, password)
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(PIKA_HOST, port=PIKA_PORT, credentials=credentials, heartbeat=150))
+            pika.ConnectionParameters(PIKA_HOST, port=PIKA_PORT, credentials=credentials, heartbeat=550))
         logger.info('Connection established: {} to exchange: {}'.format(self.connection, exchange_name))
         self.channel = self.connection.channel()
         self.channel.exchange_declare(exchange=exchange_name, exchange_type='direct')

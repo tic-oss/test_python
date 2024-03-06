@@ -1,0 +1,4 @@
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 3 # Renew lease every 15 seconds
+    leaseExpirationDurationInSeconds: 2 # Expire lease after 30 seconds of missed renewals

@@ -5,13 +5,33 @@ from typing import List
 from .keycloak import oauth2_scheme
 from .database import MSG_COLLECTION, DB
 from .models import Message
-import slack.eureka as eureka
+import eureka
 
 from rabbitmq.consumer import RabbitMQConsumer
 import logging
 from dotenv import load_dotenv
 import os
+import asyncio
 
+# async def main():
+#     consumer = RabbitMQConsumer('direct_logs', 'data_queue', ['pro_queue'])
+#     await consumer.start_consuming()
+
+# if __name__ == "__main__":
+#     asyncio.run(main())
+
+# async def consume_messages():
+#     consumer = RabbitMQConsumer('direct_logs', 'data_queue', ['pro_queue'])
+#     await consumer.start_consuming()
+
+# # Run the consuming process asynchronously
+# async def main():
+#     await consume_messages()
+
+# Start the asyncio event loop
+# if __name__ == "__main__":
+#     asyncio.run(main())
+ 
 load_dotenv()
 
 logger = logging.getLogger(__name__)
@@ -25,6 +45,10 @@ router = APIRouter(
 MONGO_URI = os.getenv("MONGO_URI")
 SLACK_PORT= os.getenv("POST_PORT")
 
+# consumer = RabbitMQConsumer('direct_logs', 'data_queue', ['pro_queue'])
+
+# # Call the start_consuming method on the instance
+# consumer.start_consuming()
 
 Mongo_uri = MONGO_URI
 

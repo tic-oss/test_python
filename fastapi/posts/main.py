@@ -10,8 +10,8 @@ app = FastAPI()
 
 
 # Register the startup and shutdown event handlers
-# app.add_event_handler("startup", startup_event)
-# app.add_event_handler("shutdown", shutdown_event)
+app.add_event_handler("startup", eureka.startup_event)
+app.add_event_handler("shutdown", eureka.shutdown_event)
 app.include_router(eureka.router)
 
 

@@ -14,6 +14,7 @@
    docker compose -f docker/services.yml up 
    docker compose -f docker/services.yml down 
 
+
                     or 
 
 
@@ -21,13 +22,9 @@
      docker compose -f prabha/docker/jhipster-registry.yml up 
      docker compose -f prabha/docker/jhipster-registry.yml down 
 
-# standalone version keycloak: (cd Downloads/keycloak-23.0.3/bin)         
+# for standalone version keycloak: (cd Downloads/keycloak-23.0.3/bin)         
       ./kc.sh start-dev    
   
-
-
-
-
 
 # run  rabbitmq server using this command: 
 
