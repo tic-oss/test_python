@@ -68,3 +68,9 @@ venv2/
  
 # Jupyter Notebook
 .ipynb_checkpoints
+
+# Ignore virtual environment directories
+myenv/
+venv/
+env/
+virtualenv/

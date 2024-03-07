@@ -34,10 +34,16 @@ docker run -d --name my-rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-manageme
  # run microservice-1 (posts) using this command: (path : cd fastapi/posts)
   uvicorn main:app --port 9001
 
+or
+
+uvicorn main:app --host 0.0.0.0 --port 9001
  
  # run microservice-2 (slack) using this command:  (path : cd fastapi/slack)
   uvicorn main:app --port 9000
 
+or 
+
+   python main.py
 
 # run databases using this commands :
 
@@ -53,3 +59,6 @@ docker run -d  --name mongodb  -p 27017:27017 --network my_network mongo:latest
    # 3. run mongo db, using this command:
 
 docker run -d --name postgresql -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=pass123 -e POSTGRES_DB=python -p 5432:5432 --network my_network  postgres:latest
+
+
+
