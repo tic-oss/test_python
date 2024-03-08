@@ -41,3 +41,7 @@ class RabbitMQProducer:
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(PIKA_HOST, port=PIKA_PORT, credentials=credentials, heartbeat=5))
         self.channel = self.connection.channel()
+
+
+
+

@@ -1,16 +1,10 @@
 import json
-# import xmltodict
 import logging
-from urllib import response
-from py_eureka_client import eureka_client
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
 import os
-import requests
-import xml.etree.ElementTree as ET
 from services.keycloak import oauth2_scheme
 from fastapi import Depends
-# from fastapi.security import OAuth2PasswordBearer
 from py_eureka_client.eureka_client import EurekaClient
 
 logging.basicConfig(level=logging.INFO)
@@ -25,12 +19,12 @@ OTHER_SERVICE_NAME = os.getenv("OTHER_SERVICE_NAME")
 EUREKA_SERVER_INSTANCES = os.getenv("EUREKA_SERVER_INSTANCES")
 PUBLIC_IP = os.getenv("PUBLIC_IP", "0.0.0.0") 
 OTHER_SERVICE_URL=os.getenv("OTHER_SERVICE_URL")
+
+
 router = APIRouter(
     prefix='/posts',
     tags=['Posts']
 )
-
-
 
 
 client = None

@@ -1,10 +1,9 @@
 from backend.database import engine
 from fastapi import FastAPI
-import models.models
-import routers.posts
-import schemas.schema
+import models.post
+import routers.main_file
 import services.eureka as eureka
-import uvicorn
+
 
 app = FastAPI()
 
@@ -17,6 +16,6 @@ app.include_router(eureka.router)
 
 
 # posts
-models.models.Base.metadata.create_all(bind=engine)
-app.include_router(routers.posts.router)
+models.post.Base.metadata.create_all(bind=engine)
+app.include_router(routers.main_file.router)
 
