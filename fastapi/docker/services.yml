@@ -7,7 +7,7 @@ services:
       service: keycloak
   jhipster-registry:
     extends:
-      file: ./jhipster-registry.yml
+      file: ./jhipster-registry-with-kp.yml
       service: jhipster-registry
     depends_on:
       keycloak:
