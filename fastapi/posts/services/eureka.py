@@ -53,8 +53,8 @@ async def shutdown_event():
 
 
 
-@router.get("/get_other")
-async def get_other(token: str = Depends(oauth2_scheme)):
+@router.get("/get_response_from_slack")
+async def get_response_from_slack(token: str = Depends(oauth2_scheme)):
     try:
         # Check if the client has been initialized
         if client is None:
