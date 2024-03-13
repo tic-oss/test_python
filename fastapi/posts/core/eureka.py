@@ -3,7 +3,7 @@ import logging
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
 import os
-from services.keycloak import oauth2_scheme
+from core.keycloak import oauth2_scheme
 from fastapi import Depends
 from py_eureka_client.eureka_client import EurekaClient
 

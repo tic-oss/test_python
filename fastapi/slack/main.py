@@ -1,8 +1,8 @@
 import asyncio
 from fastapi import FastAPI
-import fastapi.slack.routers.slack
-import services.eureka as eureka 
-from services.rabbitmq.consumer import RabbitMQConsumer
+import routers.slack
+import core.eureka as eureka 
+from core.rabbitmq.consumer import RabbitMQConsumer
 app = FastAPI()
 
 

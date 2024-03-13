@@ -1,8 +1,5 @@
 from fastapi import HTTPException
 from pymongo import MongoClient
-from bson import ObjectId
-from core.database import MSG_COLLECTION, DB
-from models.slack import Message
 import logging
 import os
 

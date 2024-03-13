@@ -4,6 +4,6 @@ import os
 
 load_dotenv()
 
-KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=KEYCLOAK_URL)
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl= os.getenv("KEYCLOAK_URL"))

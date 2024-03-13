@@ -1,11 +1,10 @@
-from fastapi import HTTPException, Depends
+from fastapi import Depends
 from sqlalchemy.orm import Session
 from core.database import get_db
 from core.keycloak import oauth2_scheme
-from core.rabbitmq.producer import RabbitMQProducer
+# from core.rabbitmq.producer import RabbitMQProducer
 from schemas import post_schema
 from models import post 
-# from routers.router_utils import publish_message_to_queue
 from routers.router_utils import *
 import logging
 logger = logging.getLogger(__name__)

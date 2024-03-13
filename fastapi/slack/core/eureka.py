@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
 import os
-from services.keycloak import oauth2_scheme
+from core.keycloak import oauth2_scheme
 from fastapi import Depends
 import json
 from py_eureka_client.eureka_client import EurekaClient
@@ -20,6 +20,7 @@ OTHER_SERVICE_NAME = os.getenv("OTHER_SERVICE_NAME")
 EUREKA_SERVER_INSTANCES = os.getenv("EUREKA_SERVER_INSTANCES")
 PUBLIC_IP = os.getenv("PUBLIC_IP", "0.0.0.0") 
 OTHER_SERVICE_URL=os.getenv("OTHER_SERVICE_URL")
+
 router = APIRouter(
     prefix='/slack',
     tags=['slack']

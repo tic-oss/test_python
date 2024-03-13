@@ -1,4 +1,3 @@
-from fastapi import HTTPException
 from pymongo import MongoClient
 from bson import ObjectId
 from core.database import MSG_COLLECTION, DB
@@ -10,14 +9,17 @@ logger = logging.getLogger(__name__)
 
 MONGO_URI = os.getenv("MONGO_URI")
 
+
 def get_mongo_client():
     return MongoClient(MONGO_URI)
+
 
 def get_channels():
     with get_mongo_client() as client:
         msg_collection = client[DB][MSG_COLLECTION]
         distinct_channel_list = msg_collection.distinct("channel")
         return distinct_channel_list
+
 
 def get_messages(channel: str):
     with get_mongo_client() as client:
@@ -29,6 +31,7 @@ def get_messages(channel: str):
 
         return response_msg_list
 
+
 def insert_message(message: Message):
     with get_mongo_client() as client:
         msg_collection = client[DB][MSG_COLLECTION]
@@ -36,11 +39,13 @@ def insert_message(message: Message):
         ack = result.acknowledged
         return ack
 
+
 def update_message(message_id: str, updated_message: Message):
     with get_mongo_client() as client:
         msg_collection = client[DB][MSG_COLLECTION]
         result = msg_collection.update_one({"_id": ObjectId(message_id)}, {"$set": updated_message.dict()})
         return result.modified_count == 1
+
 
 def delete_message(message_id: str):
     with get_mongo_client() as client:
