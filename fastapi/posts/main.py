@@ -1,8 +1,8 @@
-from backend.database import engine
+from core.database import engine
 from fastapi import FastAPI
 import models.post
-import routers.main_file
-import services.eureka as eureka
+import routers.post
+import core.eureka as eureka
 
 
 app = FastAPI()
@@ -17,5 +17,5 @@ app.include_router(eureka.router)
 
 # posts
 models.post.Base.metadata.create_all(bind=engine)
-app.include_router(routers.main_file.router)
+app.include_router(routers.post.router)
 

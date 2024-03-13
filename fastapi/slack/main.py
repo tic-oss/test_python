@@ -1,6 +1,6 @@
 import asyncio
 from fastapi import FastAPI
-import routers.main_file
+import fastapi.slack.routers.slack
 import services.eureka as eureka 
 from services.rabbitmq.consumer import RabbitMQConsumer
 app = FastAPI()
@@ -12,7 +12,7 @@ app.add_event_handler("shutdown", eureka.shutdown_event)
 
 
 # slack
-app.include_router(routers.main_file.router)
+app.include_router(routers.slack.router)
 app.include_router(eureka.router)
 
 
