@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from core.rabbitmq.producer import RabbitMQProducer
-
 import logging
+
 logger = logging.getLogger(__name__)
 
 def handle_post_not_found(id: int):

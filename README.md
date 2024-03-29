@@ -70,10 +70,10 @@ or
 or 
 
 
- # 2. run postgres, using this command:
+   # 1. run postgres, using this command:
 
                       docker run -d  --name host_mongodb  -p 27017:27017 --network=host mongo:latest
 
-   # 3. run mongo db, using this command:
+   # 2. run mongo db, using this command:
 
                   docker run -d --name host_postgresql -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=pass123 -e POSTGRES_DB=python -p 5432:5432 --network=host  postgres:latest

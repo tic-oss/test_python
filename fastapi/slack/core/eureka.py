@@ -1,17 +1,17 @@
-from dotenv import load_dotenv
+
 from fastapi import APIRouter, HTTPException
 import os
-from core.keycloak import oauth2_scheme
+# from core.keycloak import oauth2_scheme
 from fastapi import Depends
 import json
 from py_eureka_client.eureka_client import EurekaClient
 import logging
- 
+from core.auth import *
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__) 
  
-load_dotenv()
+
 
 EUREKA_SERVER = os.getenv("EUREKA_SERVER")
 APP_NAME = os.getenv("APP_NAME")
@@ -53,7 +53,7 @@ async def shutdown_event():
 
 
 @router.get("/get_response_from_post")
-async def get_response_from_post(token: str = Depends(oauth2_scheme)):
+async def get_response_from_post(token: str = Depends(get_auth)):
     try:
         # Check if the client has been initialized
         if client is None:

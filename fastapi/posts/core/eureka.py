@@ -1,16 +1,16 @@
 import json
 import logging
-from dotenv import load_dotenv
+from core.auth import *
+
 from fastapi import APIRouter, HTTPException
 import os
-from core.keycloak import oauth2_scheme
+# from core.keycloak import oauth2_scheme
 from fastapi import Depends
 from py_eureka_client.eureka_client import EurekaClient
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__) 
 
-load_dotenv()
 
 EUREKA_SERVER = os.getenv("EUREKA_SERVER")
 APP_NAME = os.getenv("APP_NAME")

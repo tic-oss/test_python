@@ -1,10 +1,10 @@
-from dotenv import load_dotenv
+
 import os
 import aio_pika
 import logging
  
 
-load_dotenv()
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 

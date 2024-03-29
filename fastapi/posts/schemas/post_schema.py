@@ -6,13 +6,13 @@ class PostBase(BaseModel):
     content: str
     title: str
     
-    class Config:
-        orm_mode = True
+    class ConfigDict:
+        from_attributes = True
 
 
 
 class CreatePost(PostBase):
-    class Config:
-        orm_mode = True
+    class ConfigDict:
+        from_attributes = True
 
 

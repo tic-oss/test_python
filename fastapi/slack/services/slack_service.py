@@ -35,7 +35,7 @@ def get_messages(channel: str):
 def insert_message(message: Message):
     with get_mongo_client() as client:
         msg_collection = client[DB][MSG_COLLECTION]
-        result = msg_collection.insert_one(message.dict())
+        result = msg_collection.insert_one(message.model_dump())
         ack = result.acknowledged
         return ack
 
@@ -43,7 +43,7 @@ def insert_message(message: Message):
 def update_message(message_id: str, updated_message: Message):
     with get_mongo_client() as client:
         msg_collection = client[DB][MSG_COLLECTION]
-        result = msg_collection.update_one({"_id": ObjectId(message_id)}, {"$set": updated_message.dict()})
+        result = msg_collection.update_one({"_id": ObjectId(message_id)}, {"$set": updated_message.model_dump()})
         return result.modified_count == 1
 
 
@@ -52,3 +52,5 @@ def delete_message(message_id: str):
         msg_collection = client[DB][MSG_COLLECTION]
         result = msg_collection.delete_one({"_id": ObjectId(message_id)})
         return result.deleted_count == 1
+
+
