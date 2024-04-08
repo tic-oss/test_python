@@ -1,9 +1,7 @@
-#/auth.py
 import os
 from fastapi import HTTPException, status
 from fastapi.security import OAuth2AuthorizationCodeBearer
-from keycloak import KeycloakOpenID # pip require python-keycloak
-# from config import settings
+from keycloak import KeycloakOpenID 
 from fastapi import Security, HTTPException, status
  
 KC_SERVER_URL = os.getenv('KC_SERVER_URL')
@@ -61,65 +59,3 @@ def raise_unauthorized_exception(detail: str):
         detail=detail
     )
 
-
-
-
-
-
-
-
-
-
-
-# import logging
-
-# from fastapi import APIRouter, Depends, FastAPI, HTTPException, status
-# from fastapi.security import OAuth2AuthorizationCodeBearer
-# from fastapi.middleware.cors import CORSMiddleware
-# import os
-# # Keycloak setup
-# from keycloak import KeycloakOpenID
-
-
-
-# keycloak_openid = KeycloakOpenID(
-#     server_url=os.getenv("KC_SERVER_URL"),
-#     # client_id=os.getenv("KC_CLIENT_ID"), web_app [public client], private clinet []
-#     realm_name=os.getenv("KC_REALM_NAME"),
-#     verify=True
-# )
-# router = APIRouter(
-#     prefix='/posts',
-#     tags=['Posts']
-# )
-# app = FastAPI()
-
-# oauth2_scheme = OAuth2AuthorizationCodeBearer(authorizationUrl=os.getenv("KC_AUTH_URL"), tokenUrl=os.getenv("KC_TOKEN_URL"))
-
-
-# async def get_auth(token: str = Depends(oauth2_scheme)):
-#     print(os.getenv("KC_REALM_NAME"))
-#     try:
-#         KEYCLOAK_PUBLIC_KEY = (
-          
-#             "-----BEGIN PUBLIC KEY-----\n"
-#             + keycloak_openid.public_key()
-#             + "\n-----END PUBLIC KEY-----"
-#         )
-#         # this only does the decode of tocken, 
-#         return keycloak_openid.decode_token(
-#             token,
-#             key=KEYCLOAK_PUBLIC_KEY,
-#             options={"verify_signature": True, "verify_aud": False, "exp": True},
-#         )
-#     except Exception as e:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Invalid authentication credentials ||" + e ,
-#             headers={"WWW-Authenticate": "Bearer"},
-#         )
-
-# @router.get("/user")
-# async def get_user():
-#     logging.info("Log relevant information here")
-#     return "uhfuihf"

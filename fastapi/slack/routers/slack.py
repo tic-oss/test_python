@@ -3,7 +3,6 @@ from typing import List
 from services.slack_service import *
 from models.slack import Message
 from .router_utils import *
-# from core.keycloak import oauth2_scheme
 from core.auth import *
 from services import slack_service
 

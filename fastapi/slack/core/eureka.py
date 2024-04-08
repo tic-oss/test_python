@@ -1,7 +1,5 @@
-
 from fastapi import APIRouter, HTTPException
 import os
-# from core.keycloak import oauth2_scheme
 from fastapi import Depends
 import json
 from py_eureka_client.eureka_client import EurekaClient
@@ -10,8 +8,6 @@ from core.auth import *
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__) 
- 
-
 
 EUREKA_SERVER = os.getenv("EUREKA_SERVER")
 APP_NAME = os.getenv("APP_NAME")
@@ -25,6 +21,7 @@ router = APIRouter(
     prefix='/slack',
     tags=['slack']
 )
+
 
 client = None
 
@@ -42,6 +39,7 @@ async def startup_event():
         # Handle initialization errors
         print(f"Error during startup: {e}")
 
+
 async def shutdown_event():
     if client:
         try:
@@ -51,9 +49,8 @@ async def shutdown_event():
             print(f"Error during shutdown: {e}")
 
 
-
 @router.get("/get_response_from_post")
-async def get_response_from_post(token: str = Depends(get_auth)):
+async def get_response_from_post(token: str = Depends(oauth2_scheme)):
     try:
         # Check if the client has been initialized
         if client is None:
@@ -65,20 +62,5 @@ async def get_response_from_post(token: str = Depends(get_auth)):
         return {"Response of other microservice": json_res}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

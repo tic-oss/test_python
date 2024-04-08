@@ -1,17 +1,11 @@
-from pymongo import MongoClient
 from bson import ObjectId
-from core.database import MSG_COLLECTION, DB
+from core.database import *
 from models.slack import Message
 import logging
-import os
+
 
 logger = logging.getLogger(__name__)
 
-MONGO_URI = os.getenv("MONGO_URI")
-
-
-def get_mongo_client():
-    return MongoClient(MONGO_URI)
 
 
 def get_channels():

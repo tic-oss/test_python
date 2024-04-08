@@ -1,9 +1,7 @@
-#/auth.py
 import os
 from fastapi import HTTPException, status
 from fastapi.security import OAuth2AuthorizationCodeBearer
-from keycloak import KeycloakOpenID # pip require python-keycloak
-# from config import settings
+from keycloak import KeycloakOpenID
 from fastapi import Security, HTTPException, status
  
 KC_SERVER_URL = os.getenv('KC_SERVER_URL')

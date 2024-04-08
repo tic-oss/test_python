@@ -14,9 +14,7 @@
          docker compose -f fastapi/docker/services.yml up 
          docker compose -f fastapi/docker/services.yml down 
 
-
                     or 
-
 
  # for run eureka server (without keycloak protection):     
          docker compose -f fastapi/docker/jhipster-registry.yml up 
@@ -64,15 +62,12 @@ or
 
                   docker run -d --name postgresql -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=pass123 -e POSTGRES_DB=python -p 5432:5432 --network my_network  postgres:latest
 
-
-
-
 or 
-
 
    # 1. run postgres, using this command:
 
                       docker run -d  --name host_mongodb  -p 27017:27017 --network=host mongo:latest
+
 
    # 2. run mongo db, using this command:
 

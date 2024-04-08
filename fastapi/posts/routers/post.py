@@ -1,12 +1,9 @@
 from fastapi import APIRouter, Depends
 from typing import List
-from requests import Session
 from starlette import status
-from core.database import get_db
-# from core.keycloak import oauth2_scheme
 from core.auth import *
 from .router_utils import *
-from schemas.post_schema import PostBase,CreatePost
+from schemas.post_schema import *
 from services import post_service
 
 

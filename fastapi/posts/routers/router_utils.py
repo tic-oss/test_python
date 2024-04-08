@@ -10,7 +10,9 @@ def handle_post_not_found(id: int):
 def handle_invalid_post_id(id: int):
     raise HTTPException(status_code=400, detail=f"The id: {id} you requested for does not exist")
     
+ # Create an instance of RabbitMQProducer
+
 async def publish_message_to_queue(message: dict):
-       producer = RabbitMQProducer(exchange_name='direct_logs')  # Create an instance of RabbitMQProducer
+       producer = RabbitMQProducer(exchange_name='direct_logs') 
        producer.publish_message(routing_key='pro_queue', message=message)
    

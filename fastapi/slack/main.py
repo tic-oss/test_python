@@ -7,7 +7,6 @@ import core.eureka as eureka
 from core.rabbitmq.consumer import RabbitMQConsumer
 app = FastAPI()
 
-
 # Register the startup and shutdown event handlers
 app.add_event_handler("startup", eureka.startup_event)
 app.add_event_handler("shutdown", eureka.shutdown_event)
@@ -16,7 +15,6 @@ app.add_event_handler("shutdown", eureka.shutdown_event)
 # slack
 app.include_router(routers.slack.router)
 app.include_router(eureka.router)
-
 
 
 async def run_consumer():
@@ -39,3 +37,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+    
