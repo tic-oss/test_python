@@ -1,7 +1,7 @@
 import os
 from fastapi import HTTPException, status
 from fastapi.security import OAuth2AuthorizationCodeBearer
-from keycloak import KeycloakOpenID
+from keycloak.keycloak_openid import KeycloakOpenID
 from fastapi import Security, HTTPException, status
  
 KC_SERVER_URL = os.getenv('KC_SERVER_URL')
@@ -10,7 +10,7 @@ KC_TOKEN_URL  = os.getenv('KC_TOKEN_URL')
 KC_REALM_NAME = os.getenv('KC_REALM_NAME')
 KC_CLIENT_ID  = os.getenv('KC_CLIENT_ID')
 KC_CLIENT_SECRET = os.getenv('KC_CLIENT_SECRET')
- 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 oauth2_scheme = OAuth2AuthorizationCodeBearer(
     authorizationUrl = KC_AUTH_URL,
     tokenUrl = KC_TOKEN_URL
@@ -24,8 +24,7 @@ keycloak_openid = KeycloakOpenID(
     realm_name = KC_REALM_NAME,
     client_secret_key = KC_CLIENT_SECRET,
     verify=True
-)
- 
+) 
  
 def get_idp_public_key():
     return (

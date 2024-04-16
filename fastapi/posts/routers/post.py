@@ -6,7 +6,6 @@ from .router_utils import *
 from schemas.post_schema import *
 from services import post_service
 
-
 router = APIRouter(
     prefix='/posts',
     tags=['Posts']
@@ -15,7 +14,7 @@ router = APIRouter(
 @router.get('/', response_model=List[PostBase], dependencies=[Depends(get_auth)]) 
 async def get_posts():
     return await post_service.get_posts()
-#   
+  
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=PostBase)
 async def create_post(post_post:CreatePost, token: str = Depends(get_auth)  ):
     new_post = await post_service.create_post(post_post,token)
@@ -32,3 +31,5 @@ async def delete_post(id: int, token: str = Depends(get_auth)):
 @router.put('/{id}', response_model=PostBase)
 async def update_post(updated_post: PostBase, id: int, token: str = Depends(get_auth)):
     return await post_service.update_post(updated_post, id, token)
+
+

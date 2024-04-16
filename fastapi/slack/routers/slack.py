@@ -27,7 +27,6 @@ async def get_channels(token: str = Depends(get_auth)):
 @router.get("/messages/{channel}", response_model=List[Message])
 async def get_messages(channel: str, token: str = Depends(get_auth)):
     logger.info(f"Get all messages for the specified channel.")
-  
     return slack_service.get_messages(channel)
 
 

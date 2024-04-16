@@ -19,3 +19,4 @@ app.include_router(eureka.router)
 models.post.Base.metadata.create_all(bind=engine)
 app.include_router(routers.post.router)
 
+ 

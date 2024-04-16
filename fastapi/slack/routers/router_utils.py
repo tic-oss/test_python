@@ -18,4 +18,3 @@ def handle_channel_not_found():
 
 def handle_internal_server_error():
     raise HTTPException(status_code=500, detail="Internal server error")
-
